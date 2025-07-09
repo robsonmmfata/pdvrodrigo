@@ -9,6 +9,10 @@ import { LoginForm } from "@/components/Auth/LoginForm";
 import { MainLayout } from "@/components/Layout/MainLayout";
 import Dashboard from "@/pages/Dashboard";
 import NewSale from "@/pages/NewSale";
+import Stores from "@/pages/Stores";
+import Sellers from "@/pages/Sellers";
+import Customers from "@/pages/Customers";
+import Products from "@/pages/Products";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -37,7 +41,11 @@ const AppRoutes = () => {
       <Route path="/" element={<MainLayout />}>
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="new-sale" element={<NewSale />} />
-        {/* Adicionar mais rotas aqui */}
+        <Route path="stores" element={<Stores />} />
+        <Route path="sellers" element={<Sellers />} />
+        <Route path="customers" element={<Customers />} />
+        <Route path="products" element={<Products />} />
+        {/* Adicionar mais rotas conforme necessário */}
       </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>
