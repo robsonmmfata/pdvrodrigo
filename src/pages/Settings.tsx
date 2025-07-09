@@ -1,13 +1,76 @@
 
-import React from 'react';
-import { Settings as SettingsIcon, Store, User, Shield, Bell } from 'lucide-react';
+import React, { useState } from 'react';
+import { Settings as SettingsIcon, Store, User, Shield, Bell, Save } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
+import { useToast } from '@/hooks/use-toast';
 
 const Settings = () => {
+  const { toast } = useToast();
+  const [storeData, setStoreData] = useState({
+    name: 'Loja Centro',
+    phone: '(11) 99999-9999',
+    address: 'Rua das Flores, 123 - Centro'
+  });
+
+  const [userData, setUserData] = useState({
+    name: 'Admin Master',
+    email: 'admin@loja.com',
+    currentPassword: '',
+    newPassword: ''
+  });
+
+  const [securityData, setSecurityData] = useState({
+    pinCode: '',
+    autoApproval: false,
+    autoBackup: true
+  });
+
+  const [notifications, setNotifications] = useState({
+    lowStock: true,
+    newSales: true,
+    pendingApprovals: true
+  });
+
+  const handleSaveStore = () => {
+    toast({
+      title: "Sucesso!",
+      description: "Informações da loja foram atualizadas.",
+    });
+  };
+
+  const handleUpdateProfile = () => {
+    if (userData.currentPassword && userData.newPassword) {
+      toast({
+        title: "Sucesso!",
+        description: "Perfil e senha atualizados com sucesso.",
+      });
+    } else {
+      toast({
+        title: "Sucesso!",
+        description: "Perfil atualizado com sucesso.",
+      });
+    }
+    setUserData({...userData, currentPassword: '', newPassword: ''});
+  };
+
+  const handleSaveSecurity = () => {
+    toast({
+      title: "Sucesso!",
+      description: "Configurações de segurança foram salvas.",
+    });
+  };
+
+  const handleSaveNotifications = () => {
+    toast({
+      title: "Sucesso!",
+      description: "Preferências de notificação foram salvas.",
+    });
+  };
+
   return (
     <div className="space-y-6">
       <div>
@@ -27,18 +90,33 @@ const Settings = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="storeName">Nome da Loja</Label>
-                <Input id="storeName" defaultValue="Loja Centro" />
+                <Input 
+                  id="storeName" 
+                  value={storeData.name}
+                  onChange={(e) => setStoreData({...storeData, name: e.target.value})}
+                />
               </div>
               <div>
                 <Label htmlFor="storePhone">Telefone</Label>
-                <Input id="storePhone" defaultValue="(11) 99999-9999" />
+                <Input 
+                  id="storePhone" 
+                  value={storeData.phone}
+                  onChange={(e) => setStoreData({...storeData, phone: e.target.value})}
+                />
               </div>
             </div>
             <div>
               <Label htmlFor="storeAddress">Endereço</Label>
-              <Input id="storeAddress" defaultValue="Rua das Flores, 123 - Centro" />
+              <Input 
+                id="storeAddress" 
+                value={storeData.address}
+                onChange={(e) => setStoreData({...storeData, address: e.target.value})}
+              />
             </div>
-            <Button>Salvar Alterações</Button>
+            <Button onClick={handleSaveStore}>
+              <Save className="mr-2 h-4 w-4" />
+              Salvar Alterações
+            </Button>
           </CardContent>
         </Card>
 
@@ -53,22 +131,43 @@ const Settings = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="userName">Nome</Label>
-                <Input id="userName" defaultValue="Admin Master" />
+                <Input 
+                  id="userName" 
+                  value={userData.name}
+                  onChange={(e) => setUserData({...userData, name: e.target.value})}
+                />
               </div>
               <div>
                 <Label htmlFor="userEmail">E-mail</Label>
-                <Input id="userEmail" defaultValue="admin@loja.com" />
+                <Input 
+                  id="userEmail" 
+                  value={userData.email}
+                  onChange={(e) => setUserData({...userData, email: e.target.value})}
+                />
               </div>
             </div>
             <div>
               <Label htmlFor="currentPassword">Senha Atual</Label>
-              <Input id="currentPassword" type="password" />
+              <Input 
+                id="currentPassword" 
+                type="password" 
+                value={userData.currentPassword}
+                onChange={(e) => setUserData({...userData, currentPassword: e.target.value})}
+              />
             </div>
             <div>
               <Label htmlFor="newPassword">Nova Senha</Label>
-              <Input id="newPassword" type="password" />
+              <Input 
+                id="newPassword" 
+                type="password" 
+                value={userData.newPassword}
+                onChange={(e) => setUserData({...userData, newPassword: e.target.value})}
+              />
             </div>
-            <Button>Atualizar Perfil</Button>
+            <Button onClick={handleUpdateProfile}>
+              <Save className="mr-2 h-4 w-4" />
+              Atualizar Perfil
+            </Button>
           </CardContent>
         </Card>
 
@@ -82,23 +181,39 @@ const Settings = () => {
           <CardContent className="space-y-4">
             <div>
               <Label htmlFor="pinCode">Código PIN para Aprovações</Label>
-              <Input id="pinCode" type="password" maxLength={4} placeholder="****" />
+              <Input 
+                id="pinCode" 
+                type="password" 
+                maxLength={4} 
+                placeholder="****" 
+                value={securityData.pinCode}
+                onChange={(e) => setSecurityData({...securityData, pinCode: e.target.value})}
+              />
             </div>
             <div className="flex items-center justify-between">
               <div>
                 <Label>Aprovação Automática de Créditos</Label>
                 <p className="text-sm text-muted-foreground">Créditos de troco são aprovados automaticamente</p>
               </div>
-              <Switch />
+              <Switch 
+                checked={securityData.autoApproval}
+                onCheckedChange={(checked) => setSecurityData({...securityData, autoApproval: checked})}
+              />
             </div>
             <div className="flex items-center justify-between">
               <div>
                 <Label>Backup Automático</Label>
                 <p className="text-sm text-muted-foreground">Fazer backup dos dados diariamente</p>
               </div>
-              <Switch defaultChecked />
+              <Switch 
+                checked={securityData.autoBackup}
+                onCheckedChange={(checked) => setSecurityData({...securityData, autoBackup: checked})}
+              />
             </div>
-            <Button>Salvar Configurações</Button>
+            <Button onClick={handleSaveSecurity}>
+              <Save className="mr-2 h-4 w-4" />
+              Salvar Configurações
+            </Button>
           </CardContent>
         </Card>
 
@@ -115,23 +230,35 @@ const Settings = () => {
                 <Label>Estoque Baixo</Label>
                 <p className="text-sm text-muted-foreground">Receber alertas quando produtos estiverem com estoque baixo</p>
               </div>
-              <Switch defaultChecked />
+              <Switch 
+                checked={notifications.lowStock}
+                onCheckedChange={(checked) => setNotifications({...notifications, lowStock: checked})}
+              />
             </div>
             <div className="flex items-center justify-between">
               <div>
                 <Label>Novas Vendas</Label>
                 <p className="text-sm text-muted-foreground">Notificar sobre novas vendas realizadas</p>
               </div>
-              <Switch defaultChecked />
+              <Switch 
+                checked={notifications.newSales}
+                onCheckedChange={(checked) => setNotifications({...notifications, newSales: checked})}
+              />
             </div>
             <div className="flex items-center justify-between">
               <div>
                 <Label>Aprovações Pendentes</Label>
                 <p className="text-sm text-muted-foreground">Alertas sobre créditos aguardando aprovação</p>
               </div>
-              <Switch defaultChecked />
+              <Switch 
+                checked={notifications.pendingApprovals}
+                onCheckedChange={(checked) => setNotifications({...notifications, pendingApprovals: checked})}
+              />
             </div>
-            <Button>Salvar Preferências</Button>
+            <Button onClick={handleSaveNotifications}>
+              <Save className="mr-2 h-4 w-4" />
+              Salvar Preferências
+            </Button>
           </CardContent>
         </Card>
       </div>

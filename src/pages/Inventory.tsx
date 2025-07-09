@@ -1,12 +1,16 @@
 
-import React from 'react';
-import { Package, Plus, Edit, Trash2, AlertTriangle } from 'lucide-react';
+import React, { useState } from 'react';
+import { Package, Plus, Edit, Trash2, AlertTriangle, Search } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
+import { useToast } from '@/hooks/use-toast';
 
 const Inventory = () => {
+  const { toast } = useToast();
+  const [searchTerm, setSearchTerm] = useState('');
+
   const inventory = [
     {
       id: 1,
@@ -37,6 +41,41 @@ const Inventory = () => {
     },
   ];
 
+  const handleSearch = () => {
+    if (searchTerm.trim()) {
+      toast({
+        title: "Busca realizada",
+        description: `Buscando por: "${searchTerm}"`,
+      });
+    }
+  };
+
+  const handleNewProduct = () => {
+    toast({
+      title: "Novo Produto",
+      description: "Abrindo formulário para cadastrar novo produto...",
+    });
+  };
+
+  const handleEditProduct = (product: any) => {
+    toast({
+      title: "Editar Produto",
+      description: `Editando ${product.name}...`,
+    });
+  };
+
+  const handleDeleteProduct = (product: any) => {
+    toast({
+      title: "Excluir Produto",
+      description: `Tem certeza que deseja excluir ${product.name}?`,
+    });
+  };
+
+  const filteredInventory = inventory.filter(product => 
+    product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    product.category.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -45,8 +84,24 @@ const Inventory = () => {
           <p className="text-muted-foreground">Controle de produtos e estoque</p>
         </div>
         <div className="flex gap-2">
-          <Input placeholder="Buscar produtos..." className="w-64" />
-          <Button>
+          <div className="relative">
+            <Input 
+              placeholder="Buscar produtos..." 
+              className="w-64 pr-10" 
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+            />
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="absolute right-0 top-0 h-full px-3"
+              onClick={handleSearch}
+            >
+              <Search className="h-4 w-4" />
+            </Button>
+          </div>
+          <Button onClick={handleNewProduct}>
             <Plus className="mr-2 h-4 w-4" />
             Novo Produto
           </Button>
@@ -54,7 +109,7 @@ const Inventory = () => {
       </div>
 
       <div className="grid gap-4">
-        {inventory.map((product) => (
+        {filteredInventory.map((product) => (
           <Card key={product.id}>
             <CardHeader>
               <div className="flex items-center justify-between">
@@ -99,11 +154,11 @@ const Inventory = () => {
                   </p>
                 </div>
                 <div className="flex gap-2">
-                  <Button variant="outline" size="sm">
+                  <Button variant="outline" size="sm" onClick={() => handleEditProduct(product)}>
                     <Edit className="h-4 w-4 mr-1" />
                     Editar
                   </Button>
-                  <Button variant="outline" size="sm">
+                  <Button variant="outline" size="sm" onClick={() => handleDeleteProduct(product)}>
                     <Trash2 className="h-4 w-4 mr-1" />
                     Excluir
                   </Button>
@@ -113,6 +168,12 @@ const Inventory = () => {
           </Card>
         ))}
       </div>
+
+      {filteredInventory.length === 0 && searchTerm && (
+        <div className="text-center py-8">
+          <p className="text-muted-foreground">Nenhum produto encontrado para "{searchTerm}"</p>
+        </div>
+      )}
     </div>
   );
 };

@@ -4,8 +4,10 @@ import { Award, Gift, History, Star } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { useToast } from '@/hooks/use-toast';
 
 const MyPoints = () => {
+  const { toast } = useToast();
   const pointsBalance = 1250;
   const pointsValue = pointsBalance * 0.01; // 1% do valor
 
@@ -32,6 +34,27 @@ const MyPoints = () => {
       type: 'redeemed'
     },
   ];
+
+  const handleRedeemDiscount = () => {
+    toast({
+      title: "Desconto Resgatado!",
+      description: "Você resgatou R$ 10,00 em desconto usando 1000 pontos.",
+    });
+  };
+
+  const handleViewRewards = () => {
+    toast({
+      title: "Recompensas Disponíveis",
+      description: "Visualizando todas as recompensas disponíveis para resgate.",
+    });
+  };
+
+  const handleHistoryItemClick = (item: any) => {
+    toast({
+      title: "Detalhes da Transação",
+      description: `${item.description} - ${item.points > 0 ? '+' : ''}${item.points} pontos`,
+    });
+  };
 
   return (
     <div className="space-y-6">
@@ -84,11 +107,11 @@ const MyPoints = () => {
         </CardHeader>
         <CardContent>
           <div className="flex gap-4">
-            <Button className="flex-1">
+            <Button className="flex-1" onClick={handleRedeemDiscount}>
               <Gift className="mr-2 h-4 w-4" />
               Resgatar Desconto
             </Button>
-            <Button variant="outline" className="flex-1">
+            <Button variant="outline" className="flex-1" onClick={handleViewRewards}>
               <Star className="mr-2 h-4 w-4" />
               Ver Recompensas
             </Button>
@@ -107,7 +130,11 @@ const MyPoints = () => {
         <CardContent>
           <div className="space-y-4">
             {pointsHistory.map((item) => (
-              <div key={item.id} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+              <div 
+                key={item.id} 
+                className="flex items-center justify-between p-3 bg-muted/50 rounded-lg cursor-pointer hover:bg-muted/70 transition-colors"
+                onClick={() => handleHistoryItemClick(item)}
+              >
                 <div>
                   <p className="font-medium">{item.description}</p>
                   <p className="text-sm text-muted-foreground">{item.date}</p>

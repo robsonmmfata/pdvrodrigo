@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,10 +8,12 @@ import {
   TrendingUp, Clock, CheckCircle, Plus, Eye
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/hooks/use-toast';
 
 const SellerDashboard = () => {
   const { user, currentStore } = useAuth();
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   const sellerStats = [
     {
@@ -19,6 +22,7 @@ const SellerDashboard = () => {
       description: '5 vendas realizadas',
       icon: DollarSign,
       color: 'text-green-600',
+      onClick: () => navigate('/sales-history')
     },
     {
       title: 'Clientes Atendidos',
@@ -26,6 +30,7 @@ const SellerDashboard = () => {
       description: 'Hoje',
       icon: Users,
       color: 'text-blue-600',
+      onClick: () => navigate('/customers')
     },
     {
       title: 'Produtos Vendidos',
@@ -33,6 +38,7 @@ const SellerDashboard = () => {
       description: 'Unidades hoje',
       icon: Package,
       color: 'text-purple-600',
+      onClick: () => navigate('/inventory')
     },
     {
       title: 'Meta do Mês',
@@ -40,6 +46,12 @@ const SellerDashboard = () => {
       description: 'R$ 6.800 de R$ 10.000',
       icon: TrendingUp,
       color: 'text-orange-600',
+      onClick: () => {
+        toast({
+          title: "Meta do Mês",
+          description: "Você já atingiu 68% da sua meta mensal!",
+        });
+      }
     },
   ];
 
@@ -60,11 +72,27 @@ const SellerDashboard = () => {
   };
 
   const handleRegisterCustomer = () => {
+    toast({
+      title: "Cadastrar Cliente",
+      description: "Redirecionando para cadastro de cliente...",
+    });
     navigate('/customers');
   };
 
   const handleUpdateStock = () => {
+    toast({
+      title: "Atualizar Estoque",
+      description: "Redirecionando para controle de estoque...",
+    });
     navigate('/inventory');
+  };
+
+  const handleSaleClick = (saleId: string) => {
+    toast({
+      title: "Venda Selecionada",
+      description: `Visualizando detalhes da ${saleId}`,
+    });
+    navigate('/sales-history');
   };
 
   return (
@@ -91,11 +119,7 @@ const SellerDashboard = () => {
       {/* Cards de Estatísticas do Vendedor */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {sellerStats.map((card, index) => (
-          <Card key={index} className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => {
-            if (card.title === 'Vendas Hoje') handleViewSalesHistory();
-            if (card.title === 'Clientes Atendidos') handleViewCustomers();
-            if (card.title === 'Produtos Vendidos') handleViewInventory();
-          }}>
+          <Card key={index} className="cursor-pointer hover:shadow-md transition-shadow" onClick={card.onClick}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">{card.title}</CardTitle>
               <card.icon className={`h-4 w-4 ${card.color}`} />
@@ -124,7 +148,7 @@ const SellerDashboard = () => {
           <CardContent>
             <div className="space-y-4">
               {[1, 2, 3, 4, 5].map((i) => (
-                <div key={i} className="flex items-center justify-between p-2 hover:bg-muted/50 rounded-lg cursor-pointer" onClick={handleViewSalesHistory}>
+                <div key={i} className="flex items-center justify-between p-2 hover:bg-muted/50 rounded-lg cursor-pointer" onClick={() => handleSaleClick(`Venda #${1000 + i}`)}>
                   <div>
                     <p className="font-medium">Venda #{1000 + i}</p>
                     <p className="text-sm text-gray-500">Cliente João Silva</p>
@@ -177,7 +201,12 @@ const SellerDashboard = () => {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+              <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg cursor-pointer" onClick={() => {
+                toast({
+                  title: "Meta Mensal",
+                  description: "Continue assim! Você está quase lá!",
+                });
+              }}>
                 <div>
                   <p className="font-medium">Meta Mensal</p>
                   <p className="text-sm text-gray-500">Faltam R$ 3.200 para atingir a meta</p>

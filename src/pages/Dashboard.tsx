@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,10 +8,12 @@ import {
   TrendingUp, CreditCard, Gift, AlertTriangle, Eye, Plus 
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/hooks/use-toast';
 
 export const Dashboard = () => {
   const { user, currentStore } = useAuth();
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   const statsCards = [
     {
@@ -19,6 +22,7 @@ export const Dashboard = () => {
       description: '+12% em relação a ontem',
       icon: DollarSign,
       color: 'text-green-600',
+      onClick: () => navigate('/sales')
     },
     {
       title: 'Pedidos',
@@ -26,6 +30,7 @@ export const Dashboard = () => {
       description: '8 pedidos nas últimas 2h',
       icon: ShoppingCart,
       color: 'text-blue-600',
+      onClick: () => navigate('/sales')
     },
     {
       title: 'Clientes',
@@ -33,6 +38,7 @@ export const Dashboard = () => {
       description: '+23 novos este mês',
       icon: Users,
       color: 'text-purple-600',
+      onClick: () => navigate('/customers')
     },
     {
       title: 'Produtos',
@@ -40,6 +46,7 @@ export const Dashboard = () => {
       description: '12 com estoque baixo',
       icon: Package,
       color: 'text-orange-600',
+      onClick: () => navigate('/products')
     },
   ];
 
@@ -50,6 +57,7 @@ export const Dashboard = () => {
       description: 'R$ 128,47 em pontos',
       icon: Gift,
       color: 'text-pink-600',
+      onClick: () => navigate('/loyalty')
     },
     {
       title: 'Créditos Pendentes',
@@ -57,8 +65,21 @@ export const Dashboard = () => {
       description: '8 aprovações pendentes',
       icon: CreditCard,
       color: 'text-indigo-600',
+      onClick: () => navigate('/credits')
     },
   ];
+
+  const handleNewSale = () => {
+    toast({
+      title: "Nova Venda",
+      description: "Redirecionando para o sistema de vendas...",
+    });
+    navigate('/sales');
+  };
+
+  const handleViewReports = () => {
+    navigate('/reports');
+  };
 
   const handleViewSales = () => {
     navigate('/sales');
@@ -68,16 +89,24 @@ export const Dashboard = () => {
     navigate('/products');
   };
 
-  const handleNewSale = () => {
-    navigate('/new-sale');
-  };
-
   const handleViewCustomers = () => {
     navigate('/customers');
   };
 
-  const handleViewReports = () => {
-    navigate('/reports');
+  const handleProductClick = (productName: string) => {
+    toast({
+      title: "Produto Selecionado",
+      description: `Visualizando detalhes de ${productName}`,
+    });
+    navigate('/products');
+  };
+
+  const handleSaleClick = (saleId: string) => {
+    toast({
+      title: "Venda Selecionada",
+      description: `Visualizando detalhes da ${saleId}`,
+    });
+    navigate('/sales');
   };
 
   return (
@@ -104,11 +133,7 @@ export const Dashboard = () => {
       {/* Cards de Estatísticas */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {statsCards.map((card, index) => (
-          <Card key={index} className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => {
-            if (card.title === 'Pedidos') handleViewSales();
-            if (card.title === 'Clientes') handleViewCustomers();
-            if (card.title === 'Produtos') handleViewProducts();
-          }}>
+          <Card key={index} className="cursor-pointer hover:shadow-md transition-shadow" onClick={card.onClick}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">{card.title}</CardTitle>
               <card.icon className={`h-4 w-4 ${card.color}`} />
@@ -124,10 +149,7 @@ export const Dashboard = () => {
       {/* Cards de Fidelidade e Créditos */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {loyaltyStats.map((card, index) => (
-          <Card key={index} className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => {
-            if (card.title === 'Pontos Ativos') navigate('/loyalty');
-            if (card.title === 'Créditos Pendentes') navigate('/credits');
-          }}>
+          <Card key={index} className="cursor-pointer hover:shadow-md transition-shadow" onClick={card.onClick}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">{card.title}</CardTitle>
               <card.icon className={`h-4 w-4 ${card.color}`} />
@@ -156,7 +178,7 @@ export const Dashboard = () => {
           <CardContent>
             <div className="space-y-4">
               {[1, 2, 3, 4, 5].map((i) => (
-                <div key={i} className="flex items-center justify-between p-2 hover:bg-muted/50 rounded-lg cursor-pointer" onClick={handleViewSales}>
+                <div key={i} className="flex items-center justify-between p-2 hover:bg-muted/50 rounded-lg cursor-pointer" onClick={() => handleSaleClick(`Venda #${2000 + i}`)}>
                   <div>
                     <p className="font-medium">Venda #{2000 + i}</p>
                     <p className="text-sm text-gray-500">Cliente João Silva</p>
@@ -194,7 +216,7 @@ export const Dashboard = () => {
                 { name: 'Produto C', stock: 7, min: 15 },
                 { name: 'Produto D', stock: 2, min: 8 },
               ].map((product, i) => (
-                <div key={i} className="flex items-center justify-between p-2 hover:bg-muted/50 rounded-lg cursor-pointer" onClick={handleViewProducts}>
+                <div key={i} className="flex items-center justify-between p-2 hover:bg-muted/50 rounded-lg cursor-pointer" onClick={() => handleProductClick(product.name)}>
                   <div>
                     <p className="font-medium">{product.name}</p>
                     <p className="text-sm text-gray-500">Mín: {product.min} unidades</p>

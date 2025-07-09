@@ -1,12 +1,16 @@
 
-import React from 'react';
-import { ShoppingCart, Calendar, DollarSign, User, Eye } from 'lucide-react';
+import React, { useState } from 'react';
+import { ShoppingCart, Calendar, DollarSign, User, Eye, Search } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
+import { useToast } from '@/hooks/use-toast';
 
 const SalesHistory = () => {
+  const { toast } = useToast();
+  const [searchTerm, setSearchTerm] = useState('');
+
   const salesHistory = [
     {
       id: 'V001',
@@ -37,6 +41,27 @@ const SalesHistory = () => {
     },
   ];
 
+  const handleSearch = () => {
+    if (searchTerm.trim()) {
+      toast({
+        title: "Busca realizada",
+        description: `Buscando por: "${searchTerm}"`,
+      });
+    }
+  };
+
+  const handleViewDetails = (sale: any) => {
+    toast({
+      title: "Detalhes da Venda",
+      description: `Visualizando venda ${sale.id} - ${sale.customer}`,
+    });
+  };
+
+  const filteredSales = salesHistory.filter(sale => 
+    sale.customer.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    sale.id.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -45,12 +70,28 @@ const SalesHistory = () => {
           <p className="text-muted-foreground">Suas vendas realizadas</p>
         </div>
         <div className="flex gap-2">
-          <Input placeholder="Buscar vendas..." className="w-64" />
+          <div className="relative">
+            <Input 
+              placeholder="Buscar vendas..." 
+              className="w-64 pr-10" 
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+            />
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="absolute right-0 top-0 h-full px-3"
+              onClick={handleSearch}
+            >
+              <Search className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
       </div>
 
       <div className="grid gap-4">
-        {salesHistory.map((sale) => (
+        {filteredSales.map((sale) => (
           <Card key={sale.id}>
             <CardHeader>
               <div className="flex items-center justify-between">
@@ -70,7 +111,7 @@ const SalesHistory = () => {
                   <Badge variant={sale.status === 'Concluída' ? 'default' : 'secondary'}>
                     {sale.status}
                   </Badge>
-                  <Button variant="outline" size="sm">
+                  <Button variant="outline" size="sm" onClick={() => handleViewDetails(sale)}>
                     <Eye className="h-4 w-4 mr-1" />
                     Ver Detalhes
                   </Button>
@@ -105,6 +146,12 @@ const SalesHistory = () => {
           </Card>
         ))}
       </div>
+
+      {filteredSales.length === 0 && searchTerm && (
+        <div className="text-center py-8">
+          <p className="text-muted-foreground">Nenhuma venda encontrada para "{searchTerm}"</p>
+        </div>
+      )}
     </div>
   );
 };
