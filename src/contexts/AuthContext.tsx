@@ -45,13 +45,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   ]);
 
   const login = async (email: string, password: string) => {
-    // Simulação de login - substituir por API real
-    const mockUser: User = {
-      id: '1',
-      name: 'Admin Master',
-      email,
-      role: 'admin',
-    };
+    // Simulação de login com diferentes tipos de usuário
+    let mockUser: User;
+
+    if (email === 'admin@loja.com' && password === '123456') {
+      mockUser = {
+        id: '1',
+        name: 'Admin Master',
+        email,
+        role: 'admin',
+      };
+    } else if (email === 'vendedor@loja.com' && password === '123456') {
+      mockUser = {
+        id: '2',
+        name: 'Vendedor João',
+        email,
+        role: 'seller',
+        storeId: '1',
+      };
+    } else if (email === 'cliente@loja.com' && password === '123456') {
+      mockUser = {
+        id: '3',
+        name: 'Cliente Maria',
+        email,
+        role: 'customer',
+      };
+    } else {
+      throw new Error('Credenciais inválidas');
+    }
     
     setUser(mockUser);
     localStorage.setItem('user', JSON.stringify(mockUser));

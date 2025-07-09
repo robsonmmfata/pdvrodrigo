@@ -94,10 +94,18 @@ export const LoginForm = () => {
             </Button>
 
             <div className="text-center text-sm text-gray-600">
-              <p>Credenciais de teste:</p>
-              <p className="font-mono text-xs bg-gray-100 p-2 rounded mt-1">
-                admin@loja.com / 123456
-              </p>
+              <p className="mb-2">Credenciais de teste:</p>
+              <div className="space-y-1 text-xs">
+                <div className="font-mono bg-gray-100 p-2 rounded">
+                  <strong>Admin:</strong> admin@loja.com / 123456
+                </div>
+                <div className="font-mono bg-gray-100 p-2 rounded">
+                  <strong>Vendedor:</strong> vendedor@loja.com / 123456
+                </div>
+                <div className="font-mono bg-gray-100 p-2 rounded">
+                  <strong>Cliente:</strong> cliente@loja.com / 123456
+                </div>
+              </div>
             </div>
           </form>
         </CardContent>

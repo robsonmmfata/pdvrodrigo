@@ -8,11 +8,17 @@ import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { LoginForm } from "@/components/Auth/LoginForm";
 import { MainLayout } from "@/components/Layout/MainLayout";
 import Dashboard from "@/pages/Dashboard";
+import SellerDashboard from "@/pages/SellerDashboard";
 import NewSale from "@/pages/NewSale";
 import Stores from "@/pages/Stores";
 import Sellers from "@/pages/Sellers";
 import Customers from "@/pages/Customers";
 import Products from "@/pages/Products";
+import Sales from "@/pages/Sales";
+import Credits from "@/pages/Credits";
+import Loyalty from "@/pages/Loyalty";
+import Reports from "@/pages/Reports";
+import Settings from "@/pages/Settings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,18 +40,62 @@ const AppRoutes = () => {
     );
   }
 
+  // Redirecionamento baseado no tipo de usuário após login
+  const getDefaultRoute = () => {
+    switch (user.role) {
+      case 'admin':
+        return '/dashboard';
+      case 'seller':
+        return '/seller-dashboard';
+      case 'customer':
+        return '/my-points';
+      default:
+        return '/dashboard';
+    }
+  };
+
   return (
     <Routes>
-      <Route path="/login" element={<Navigate to="/dashboard" replace />} />
-      <Route path="/" element={<Navigate to="/dashboard" replace />} />
+      <Route path="/login" element={<Navigate to={getDefaultRoute()} replace />} />
+      <Route path="/" element={<Navigate to={getDefaultRoute()} replace />} />
       <Route path="/" element={<MainLayout />}>
-        <Route path="dashboard" element={<Dashboard />} />
-        <Route path="new-sale" element={<NewSale />} />
-        <Route path="stores" element={<Stores />} />
-        <Route path="sellers" element={<Sellers />} />
-        <Route path="customers" element={<Customers />} />
-        <Route path="products" element={<Products />} />
-        {/* Adicionar mais rotas conforme necessário */}
+        {/* Rotas do Admin */}
+        {user.role === 'admin' && (
+          <>
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="stores" element={<Stores />} />
+            <Route path="sellers" element={<Sellers />} />
+            <Route path="customers" element={<Customers />} />
+            <Route path="products" element={<Products />} />
+            <Route path="sales" element={<Sales />} />
+            <Route path="credits" element={<Credits />} />
+            <Route path="loyalty" element={<Loyalty />} />
+            <Route path="reports" element={<Reports />} />
+            <Route path="settings" element={<Settings />} />
+          </>
+        )}
+        
+        {/* Rotas do Vendedor */}
+        {user.role === 'seller' && (
+          <>
+            <Route path="seller-dashboard" element={<SellerDashboard />} />
+            <Route path="new-sale" element={<NewSale />} />
+            <Route path="customers" element={<Customers />} />
+            <Route path="products" element={<Products />} />
+            <Route path="sales-history" element={<Sales />} />
+            <Route path="inventory" element={<Products />} />
+          </>
+        )}
+        
+        {/* Rotas do Cliente */}
+        {user.role === 'customer' && (
+          <>
+            <Route path="my-points" element={<Loyalty />} />
+            <Route path="my-credits" element={<Credits />} />
+            <Route path="my-purchases" element={<Sales />} />
+            <Route path="profile" element={<Settings />} />
+          </>
+        )}
       </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>
