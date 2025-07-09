@@ -1,14 +1,16 @@
-
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { 
   ShoppingCart, Users, Package, DollarSign,
-  TrendingUp, Clock, CheckCircle
+  TrendingUp, Clock, CheckCircle, Plus, Eye
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
 const SellerDashboard = () => {
   const { user, currentStore } = useAuth();
+  const navigate = useNavigate();
 
   const sellerStats = [
     {
@@ -41,19 +43,59 @@ const SellerDashboard = () => {
     },
   ];
 
+  const handleNewSale = () => {
+    navigate('/new-sale');
+  };
+
+  const handleViewCustomers = () => {
+    navigate('/customers');
+  };
+
+  const handleViewInventory = () => {
+    navigate('/inventory');
+  };
+
+  const handleViewSalesHistory = () => {
+    navigate('/sales-history');
+  };
+
+  const handleRegisterCustomer = () => {
+    navigate('/customers');
+  };
+
+  const handleUpdateStock = () => {
+    navigate('/inventory');
+  };
+
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Painel do Vendedor</h1>
-        <p className="text-gray-600 mt-1">
-          Bem-vindo, {user?.name}! Suas vendas em {currentStore?.name}
-        </p>
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">Painel do Vendedor</h1>
+          <p className="text-gray-600 mt-1">
+            Bem-vindo, {user?.name}! Suas vendas em {currentStore?.name}
+          </p>
+        </div>
+        <div className="flex gap-2">
+          <Button onClick={handleNewSale}>
+            <Plus className="mr-2 h-4 w-4" />
+            Nova Venda
+          </Button>
+          <Button variant="outline" onClick={handleViewSalesHistory}>
+            <Eye className="mr-2 h-4 w-4" />
+            Histórico
+          </Button>
+        </div>
       </div>
 
       {/* Cards de Estatísticas do Vendedor */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {sellerStats.map((card, index) => (
-          <Card key={index}>
+          <Card key={index} className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => {
+            if (card.title === 'Vendas Hoje') handleViewSalesHistory();
+            if (card.title === 'Clientes Atendidos') handleViewCustomers();
+            if (card.title === 'Produtos Vendidos') handleViewInventory();
+          }}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">{card.title}</CardTitle>
               <card.icon className={`h-4 w-4 ${card.color}`} />
@@ -69,14 +111,20 @@ const SellerDashboard = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Vendas Recentes do Vendedor */}
         <Card>
-          <CardHeader>
-            <CardTitle>Minhas Vendas Recentes</CardTitle>
-            <CardDescription>Últimas transações realizadas</CardDescription>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle>Minhas Vendas Recentes</CardTitle>
+              <CardDescription>Últimas transações realizadas</CardDescription>
+            </div>
+            <Button variant="outline" size="sm" onClick={handleViewSalesHistory}>
+              <Eye className="h-4 w-4 mr-1" />
+              Ver Todas
+            </Button>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               {[1, 2, 3, 4, 5].map((i) => (
-                <div key={i} className="flex items-center justify-between">
+                <div key={i} className="flex items-center justify-between p-2 hover:bg-muted/50 rounded-lg cursor-pointer" onClick={handleViewSalesHistory}>
                   <div>
                     <p className="font-medium">Venda #{1000 + i}</p>
                     <p className="text-sm text-gray-500">Cliente João Silva</p>
@@ -105,7 +153,7 @@ const SellerDashboard = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <div className="flex items-center justify-between p-3 bg-yellow-50 rounded-lg">
+              <div className="flex items-center justify-between p-3 bg-yellow-50 rounded-lg cursor-pointer hover:bg-yellow-100 transition-colors" onClick={handleRegisterCustomer}>
                 <div>
                   <p className="font-medium">Cadastrar Cliente Pendente</p>
                   <p className="text-sm text-gray-500">Maria dos Santos - (11) 99999-8888</p>
@@ -117,7 +165,7 @@ const SellerDashboard = () => {
                 </div>
               </div>
               
-              <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+              <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg cursor-pointer hover:bg-blue-100 transition-colors" onClick={handleUpdateStock}>
                 <div>
                   <p className="font-medium">Atualizar Estoque</p>
                   <p className="text-sm text-gray-500">3 produtos com quantidade baixa</p>

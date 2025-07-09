@@ -19,6 +19,11 @@ import Credits from "@/pages/Credits";
 import Loyalty from "@/pages/Loyalty";
 import Reports from "@/pages/Reports";
 import Settings from "@/pages/Settings";
+import Inventory from "@/pages/Inventory";
+import SalesHistory from "@/pages/SalesHistory";
+import MyPoints from "@/pages/MyPoints";
+import MyCredits from "@/pages/MyCredits";
+import MyPurchases from "@/pages/MyPurchases";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -82,17 +87,17 @@ const AppRoutes = () => {
             <Route path="new-sale" element={<NewSale />} />
             <Route path="customers" element={<Customers />} />
             <Route path="products" element={<Products />} />
-            <Route path="sales-history" element={<Sales />} />
-            <Route path="inventory" element={<Products />} />
+            <Route path="sales-history" element={<SalesHistory />} />
+            <Route path="inventory" element={<Inventory />} />
           </>
         )}
         
         {/* Rotas do Cliente */}
         {user.role === 'customer' && (
           <>
-            <Route path="my-points" element={<Loyalty />} />
-            <Route path="my-credits" element={<Credits />} />
-            <Route path="my-purchases" element={<Sales />} />
+            <Route path="my-points" element={<MyPoints />} />
+            <Route path="my-credits" element={<MyCredits />} />
+            <Route path="my-purchases" element={<MyPurchases />} />
             <Route path="profile" element={<Settings />} />
           </>
         )}
