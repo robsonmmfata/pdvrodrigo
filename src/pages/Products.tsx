@@ -1,12 +1,15 @@
 
 import React from 'react';
-import { Plus, Package, AlertTriangle, Eye, Edit } from 'lucide-react';
+import { Plus, Package, AlertTriangle, Eye, Edit, Trash2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
+import { useToast } from '@/hooks/use-toast';
 
 const Products = () => {
+  const { toast } = useToast();
+
   const products = [
     { 
       id: '1', 
@@ -46,6 +49,50 @@ const Products = () => {
     return { color: 'text-green-600', label: 'Em Estoque', variant: 'default' as const };
   };
 
+  const handleNewProduct = () => {
+    toast({
+      title: "Novo Produto",
+      description: "Abrindo formulário para cadastrar novo produto...",
+    });
+  };
+
+  const handleViewProduct = (product: any) => {
+    toast({
+      title: "Visualizar Produto",
+      description: `Visualizando detalhes de ${product.name}`,
+    });
+  };
+
+  const handleEditProduct = (product: any) => {
+    toast({
+      title: "Editar Produto",
+      description: `Editando ${product.name}...`,
+    });
+  };
+
+  const handleDeleteProduct = (product: any) => {
+    toast({
+      title: "Confirmar Exclusão",
+      description: `Tem certeza que deseja excluir ${product.name}?`,
+      variant: "destructive"
+    });
+  };
+
+  const handleApproveProduct = (product: any) => {
+    toast({
+      title: "Produto Aprovado",
+      description: `${product.name} foi aprovado e está ativo!`,
+    });
+  };
+
+  const handleToggleStatus = (product: any) => {
+    const newStatus = product.active ? 'inativo' : 'ativo';
+    toast({
+      title: "Status Alterado",
+      description: `${product.name} agora está ${newStatus}`,
+    });
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -53,7 +100,7 @@ const Products = () => {
           <h1 className="text-3xl font-bold text-foreground">Gerenciar Produtos</h1>
           <p className="text-muted-foreground">Administre todos os produtos e estoque</p>
         </div>
-        <Button>
+        <Button onClick={handleNewProduct}>
           <Plus className="mr-2 h-4 w-4" />
           Novo Produto
         </Button>
@@ -74,9 +121,19 @@ const Products = () => {
                     </CardTitle>
                     <p className="text-sm text-muted-foreground mt-1">{product.category}</p>
                   </div>
-                  <Badge variant={product.active ? "default" : "secondary"}>
-                    {product.active ? "Ativo" : "Inativo"}
-                  </Badge>
+                  <div className="flex flex-col gap-1">
+                    <Badge variant={product.active ? "default" : "secondary"}>
+                      {product.active ? "Ativo" : "Inativo"}
+                    </Badge>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleToggleStatus(product)}
+                      className="text-xs"
+                    >
+                      {product.active ? "Desativar" : "Ativar"}
+                    </Button>
+                  </div>
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -109,14 +166,36 @@ const Products = () => {
                   <span className="font-medium">{product.sales}</span>
                 </div>
 
-                <div className="flex gap-2 pt-2">
-                  <Button variant="outline" size="sm" className="flex-1">
+                <div className="grid grid-cols-2 gap-2 pt-2">
+                  <Button variant="outline" size="sm" onClick={() => handleViewProduct(product)}>
                     <Eye className="mr-1 h-3 w-3" />
                     Ver
                   </Button>
-                  <Button variant="outline" size="sm" className="flex-1">
+                  <Button variant="outline" size="sm" onClick={() => handleEditProduct(product)}>
                     <Edit className="mr-1 h-3 w-3" />
                     Editar
+                  </Button>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                  {!product.active && (
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={() => handleApproveProduct(product)}
+                      className="text-green-600 hover:text-green-700"
+                    >
+                      Aprovar
+                    </Button>
+                  )}
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => handleDeleteProduct(product)}
+                    className="text-red-600 hover:text-red-700"
+                  >
+                    <Trash2 className="mr-1 h-3 w-3" />
+                    Excluir
                   </Button>
                 </div>
               </CardContent>

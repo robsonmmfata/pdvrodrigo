@@ -3,7 +3,7 @@ import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import {
   Store, Users, ShoppingCart, Package, CreditCard, Gift,
-  BarChart3, Settings, User, History, Award
+  BarChart3, Settings, User, History, Award, Warehouse
 } from 'lucide-react';
 import {
   Sidebar,
@@ -29,6 +29,7 @@ export const AppSidebar = () => {
     { title: 'Vendedores', url: '/sellers', icon: Users },
     { title: 'Clientes', url: '/customers', icon: User },
     { title: 'Produtos', url: '/products', icon: Package },
+    { title: 'Estoque', url: '/stock', icon: Warehouse },
     { title: 'Vendas', url: '/sales', icon: ShoppingCart },
     { title: 'Créditos', url: '/credits', icon: CreditCard },
     { title: 'Fidelidade', url: '/loyalty', icon: Gift },
@@ -37,11 +38,12 @@ export const AppSidebar = () => {
   ];
 
   const sellerMenuItems = [
+    { title: 'Dashboard', url: '/seller-dashboard', icon: BarChart3 },
     { title: 'Nova Venda', url: '/new-sale', icon: ShoppingCart },
     { title: 'Clientes', url: '/customers', icon: Users },
     { title: 'Produtos', url: '/products', icon: Package },
     { title: 'Histórico', url: '/sales-history', icon: History },
-    { title: 'Estoque', url: '/inventory', icon: Package },
+    { title: 'Inventário', url: '/inventory', icon: Package },
   ];
 
   const customerMenuItems = [

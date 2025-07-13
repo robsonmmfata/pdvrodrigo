@@ -19,6 +19,7 @@ import Credits from "@/pages/Credits";
 import Loyalty from "@/pages/Loyalty";
 import Reports from "@/pages/Reports";
 import Settings from "@/pages/Settings";
+import Stock from "@/pages/Stock";
 import Inventory from "@/pages/Inventory";
 import SalesHistory from "@/pages/SalesHistory";
 import MyPoints from "@/pages/MyPoints";
@@ -72,6 +73,7 @@ const AppRoutes = () => {
             <Route path="sellers" element={<Sellers />} />
             <Route path="customers" element={<Customers />} />
             <Route path="products" element={<Products />} />
+            <Route path="stock" element={<Stock />} />
             <Route path="sales" element={<Sales />} />
             <Route path="credits" element={<Credits />} />
             <Route path="loyalty" element={<Loyalty />} />

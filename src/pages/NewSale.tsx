@@ -15,6 +15,7 @@ interface SaleItem {
   quantity: number;
   unitPrice: number;
   total: number;
+  productId: string;
 }
 
 interface Customer {
@@ -69,6 +70,7 @@ export const NewSale = () => {
       quantity: 1,
       unitPrice: 0,
       total: 0,
+      productId: '',
     };
     setItems([...items, newItem]);
   };
@@ -117,6 +119,30 @@ export const NewSale = () => {
       return;
     }
 
+    // Verificar estoque antes de finalizar
+    const outOfStockItems = items.filter(item => {
+      const product = mockProducts.find(p => p.id === item.productId);
+      return !product || product.stock < item.quantity;
+    });
+
+    if (outOfStockItems.length > 0) {
+      toast({ 
+        title: "Estoque insuficiente!", 
+        description: `Alguns produtos não têm estoque suficiente.`,
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Simular baixa automática no estoque
+    const stockMovements = items.map(item => ({
+      productId: item.productId,
+      productName: item.name,
+      quantitySold: item.quantity,
+      previousStock: mockProducts.find(p => p.id === item.productId)?.stock || 0,
+      newStock: (mockProducts.find(p => p.id === item.productId)?.stock || 0) - item.quantity
+    }));
+
     // Simular finalização da venda
     const saleData = {
       customer,
@@ -126,13 +152,14 @@ export const NewSale = () => {
       loyaltyPointsEarned: Math.floor(getTotalSale() * 0.01),
       change: getChange(),
       leaveChangeAsCredit,
+      stockMovements
     };
 
-    console.log('Venda finalizada:', saleData);
+    console.log('Venda finalizada com baixa automática no estoque:', saleData);
     
     toast({ 
-      title: "Venda finalizada!", 
-      description: `Total: R$ ${getTotalSale().toFixed(2)}. Mensagem enviada para ${customer.whatsapp}` 
+      title: "Venda finalizada com sucesso!", 
+      description: `Total: R$ ${getTotalSale().toFixed(2)}. Estoque atualizado automaticamente. WhatsApp enviado para ${customer.whatsapp}` 
     });
 
     // Reset form
@@ -142,6 +169,33 @@ export const NewSale = () => {
     setPaymentMethod('');
     setCashReceived('');
     setLeaveChangeAsCredit(false);
+  };
+
+  const registerNewCustomer = () => {
+    toast({
+      title: "Cadastrar Cliente",
+      description: "Abrindo formulário de cadastro de cliente...",
+    });
+  };
+
+  const sendWhatsApp = () => {
+    if (!customer) {
+      toast({
+        title: "Erro",
+        description: "Selecione um cliente primeiro.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const message = `Olá ${customer.name}! Sua compra no valor de R$ ${getTotalSale().toFixed(2)} foi processada. Obrigado pela preferência!`;
+    const whatsappUrl = `https://wa.me/${customer.whatsapp.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;
+    
+    window.open(whatsappUrl, '_blank');
+    toast({
+      title: "WhatsApp enviado!",
+      description: `Mensagem enviada para ${customer.name}`,
+    });
   };
 
   return (
@@ -190,7 +244,7 @@ export const NewSale = () => {
               </div>
             )}
 
-            <Button variant="outline" className="w-full">
+            <Button variant="outline" className="w-full" onClick={registerNewCustomer}>
               + Cadastrar Novo Cliente
             </Button>
           </CardContent>
@@ -243,7 +297,7 @@ export const NewSale = () => {
       <Card>
         <CardHeader>
           <CardTitle>Produtos</CardTitle>
-          <CardDescription>Adicione os produtos da venda</CardDescription>
+          <CardDescription>Adicione os produtos da venda (baixa automática no estoque)</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {items.map((item) => (
@@ -255,6 +309,7 @@ export const NewSale = () => {
                   if (product) {
                     updateItem(item.id, 'name', product.name);
                     updateItem(item.id, 'unitPrice', product.price);
+                    updateItem(item.id, 'productId', product.id);
                   }
                 }}>
                   <SelectTrigger>
@@ -263,7 +318,7 @@ export const NewSale = () => {
                   <SelectContent>
                     {mockProducts.map((product) => (
                       <SelectItem key={product.id} value={product.id}>
-                        {product.name} - R$ {product.price.toFixed(2)}
+                        {product.name} - R$ {product.price.toFixed(2)} (Est: {product.stock})
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -359,7 +414,7 @@ export const NewSale = () => {
               <CreditCard className="h-4 w-4 mr-2" />
               Finalizar Venda
             </Button>
-            <Button variant="outline">
+            <Button variant="outline" onClick={sendWhatsApp}>
               <MessageCircle className="h-4 w-4 mr-2" />
               Enviar WhatsApp
             </Button>
