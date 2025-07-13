@@ -78,7 +78,6 @@ const AppRoutes = () => {
             <Route path="credits" element={<Credits />} />
             <Route path="loyalty" element={<Loyalty />} />
             <Route path="reports" element={<Reports />} />
-            <Route path="settings" element={<Settings />} />
           </>
         )}
         
@@ -103,6 +102,9 @@ const AppRoutes = () => {
             <Route path="profile" element={<Settings />} />
           </>
         )}
+        
+        {/* Rota de Settings acessível para todos os usuários logados */}
+        <Route path="settings" element={<Settings />} />
       </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>
