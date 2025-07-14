@@ -77,38 +77,63 @@ const Stock = () => {
   ];
 
   const handleStockEntry = (productId: number) => {
-    toast({
-      title: "Entrada de Estoque",
-      description: `Registrando entrada para produto ID: ${productId}`,
-    });
+    // Simulando entrada real
+    const product = stockData.find(p => p.id === productId);
+    if (product) {
+      toast({
+        title: "Entrada de Estoque",
+        description: `Entrada registrada para ${product.name}. Novo estoque: ${product.currentStock + 10}`,
+      });
+    }
   };
 
   const handleStockExit = (productId: number) => {
-    toast({
-      title: "Saída de Estoque",
-      description: `Registrando saída manual para produto ID: ${productId}`,
-    });
+    // Simulando saída real
+    const product = stockData.find(p => p.id === productId);
+    if (product) {
+      toast({
+        title: "Saída de Estoque",
+        description: `Saída registrada para ${product.name}. Novo estoque: ${Math.max(0, product.currentStock - 1)}`,
+      });
+    }
   };
 
   const handleInventory = () => {
+    // Simulando inventário real
     toast({
       title: "Inventário Geral",
-      description: "Iniciando processo de inventário completo...",
+      description: "Processo de inventário completo iniciado. Verifique todos os produtos.",
     });
+    // Aqui você redirecionaria para página de inventário
   };
 
   const handleEditProduct = (productId: number) => {
-    toast({
-      title: "Editar Produto",
-      description: `Editando configurações do produto ID: ${productId}`,
-    });
+    // Simulando edição real
+    const product = stockData.find(p => p.id === productId);
+    if (product) {
+      toast({
+        title: "Editar Produto",
+        description: `Editando ${product.name}. Funcionalidade em desenvolvimento.`,
+      });
+    }
   };
 
   const handleDeleteProduct = (productId: number) => {
+    // Simulando exclusão real
+    const product = stockData.find(p => p.id === productId);
+    if (product) {
+      toast({
+        title: "Produto Excluído",
+        description: `${product.name} foi removido do estoque.`,
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleNewProduct = () => {
     toast({
-      title: "Excluir Produto",
-      description: `Produto ID: ${productId} será removido do estoque`,
-      variant: "destructive"
+      title: "Novo Produto",
+      description: "Redirecionando para cadastro de novo produto...",
     });
   };
 
@@ -149,7 +174,7 @@ const Stock = () => {
             <ClipboardList className="mr-2 h-4 w-4" />
             Inventário Geral
           </Button>
-          <Button>
+          <Button onClick={handleNewProduct}>
             <Plus className="mr-2 h-4 w-4" />
             Novo Produto
           </Button>

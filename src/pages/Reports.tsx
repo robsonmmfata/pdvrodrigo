@@ -1,10 +1,35 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { BarChart3, TrendingUp, DollarSign, Users, Package, Calendar } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
 
 const Reports = () => {
+  const { toast } = useToast();
+  const [reportData, setReportData] = useState({
+    salesDaily: 1847.50,
+    salesWeekly: 8245.30,
+    salesMonthly: 32189.45,
+    salesYearly: 124567.89,
+    activeCustomers: 47,
+    productsSold: 89,
+    averageTicket: 156.80
+  });
+
+  const handleGenerateReport = () => {
+    toast({
+      title: "Relatório Gerado",
+      description: "Relatório completo gerado com dados atualizados do sistema.",
+    });
+    // Simulando atualização dos dados
+    setReportData({
+      ...reportData,
+      salesDaily: reportData.salesDaily + Math.random() * 100,
+      activeCustomers: reportData.activeCustomers + Math.floor(Math.random() * 5),
+    });
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -12,7 +37,7 @@ const Reports = () => {
           <h1 className="text-3xl font-bold text-foreground">Relatórios</h1>
           <p className="text-muted-foreground">Análises e estatísticas do negócio</p>
         </div>
-        <Button>
+        <Button onClick={handleGenerateReport}>
           <Calendar className="mr-2 h-4 w-4" />
           Gerar Relatório
         </Button>
@@ -27,7 +52,7 @@ const Reports = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">R$ 1.847,50</div>
+            <div className="text-2xl font-bold text-green-600">R$ {reportData.salesDaily.toFixed(2)}</div>
             <p className="text-xs text-muted-foreground">+15% vs ontem</p>
           </CardContent>
         </Card>
@@ -40,7 +65,7 @@ const Reports = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-blue-600">47</div>
+            <div className="text-2xl font-bold text-blue-600">{reportData.activeCustomers}</div>
             <p className="text-xs text-muted-foreground">+5 novos hoje</p>
           </CardContent>
         </Card>
@@ -53,7 +78,7 @@ const Reports = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-purple-600">89</div>
+            <div className="text-2xl font-bold text-purple-600">{reportData.productsSold}</div>
             <p className="text-xs text-muted-foreground">Unidades hoje</p>
           </CardContent>
         </Card>
@@ -66,7 +91,7 @@ const Reports = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-orange-600">R$ 156,80</div>
+            <div className="text-2xl font-bold text-orange-600">R$ {reportData.averageTicket.toFixed(2)}</div>
             <p className="text-xs text-muted-foreground">+8% vs semana passada</p>
           </CardContent>
         </Card>
@@ -84,19 +109,19 @@ const Reports = () => {
             <div className="space-y-4">
               <div className="flex justify-between items-center">
                 <span className="text-sm">Hoje</span>
-                <span className="font-medium">R$ 1.847,50</span>
+                <span className="font-medium">R$ {reportData.salesDaily.toFixed(2)}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm">Esta Semana</span>
-                <span className="font-medium">R$ 8.245,30</span>
+                <span className="font-medium">R$ {reportData.salesWeekly.toFixed(2)}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm">Este Mês</span>
-                <span className="font-medium">R$ 32.189,45</span>
+                <span className="font-medium">R$ {reportData.salesMonthly.toFixed(2)}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm">Este Ano</span>
-                <span className="font-medium">R$ 124.567,89</span>
+                <span className="font-medium">R$ {reportData.salesYearly.toFixed(2)}</span>
               </div>
             </div>
           </CardContent>

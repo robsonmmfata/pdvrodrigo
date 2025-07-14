@@ -3,8 +3,10 @@ import React from 'react';
 import { ShoppingBag, Calendar, DollarSign, Package } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { useToast } from '@/hooks/use-toast';
 
 const MyPurchases = () => {
+  const { toast } = useToast();
   const purchases = [
     {
       id: 'C001',

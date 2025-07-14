@@ -1,13 +1,16 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { ShoppingCart, Calendar, DollarSign, User, Filter } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
+import { useToast } from '@/hooks/use-toast';
+import Filters from '@/components/ui/filters';
 
 const Sales = () => {
-  const sales = [
+  const { toast } = useToast();
+  const [sales, setSales] = useState([
     {
       id: 'V001',
       customer: 'João Silva',
@@ -38,7 +41,34 @@ const Sales = () => {
       items: 5,
       status: 'Pendente'
     },
-  ];
+  ]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filters, setFilters] = useState<any>({});
+
+  const handleSearch = () => {
+    toast({
+      title: "Busca Realizada",
+      description: `Buscando por: "${searchTerm}"`,
+    });
+  };
+
+  const handleViewDetails = (sale: any) => {
+    toast({
+      title: "Detalhes da Venda",
+      description: `Visualizando venda ${sale.id} - ${sale.customer}`,
+    });
+  };
+
+  const filteredSales = sales.filter(sale => {
+    const matchesSearch = sale.customer.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         sale.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         sale.seller.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesStatus = !filters.status || sale.status === filters.status;
+    const matchesPayment = !filters.paymentMethod || sale.payment === filters.paymentMethod;
+    
+    return matchesSearch && matchesStatus && matchesPayment;
+  });
 
   return (
     <div className="space-y-6">
@@ -47,17 +77,23 @@ const Sales = () => {
           <h1 className="text-3xl font-bold text-foreground">Vendas</h1>
           <p className="text-muted-foreground">Histórico de todas as vendas</p>
         </div>
-        <div className="flex gap-2">
-          <Input placeholder="Buscar vendas..." className="w-64" />
-          <Button variant="outline">
-            <Filter className="mr-2 h-4 w-4" />
-            Filtros
-          </Button>
-        </div>
+        <Filters
+          searchTerm={searchTerm}
+          onSearchChange={setSearchTerm}
+          onSearch={handleSearch}
+          filters={filters}
+          onFilterChange={setFilters}
+          onClearFilters={() => setFilters({})}
+          options={{
+            statuses: ['Concluída', 'Pendente', 'Cancelada'],
+            paymentMethods: ['Pix', 'Cartão', 'Dinheiro'],
+          }}
+          placeholder="Buscar vendas..."
+        />
       </div>
 
       <div className="grid gap-4">
-        {sales.map((sale) => (
+        {filteredSales.map((sale) => (
           <Card key={sale.id}>
             <CardHeader>
               <div className="flex items-center justify-between">
@@ -73,9 +109,14 @@ const Sales = () => {
                     </p>
                   </div>
                 </div>
-                <Badge variant={sale.status === 'Concluída' ? 'default' : 'secondary'}>
-                  {sale.status}
-                </Badge>
+                <div className="flex items-center gap-2">
+                  <Badge variant={sale.status === 'Concluída' ? 'default' : 'secondary'}>
+                    {sale.status}
+                  </Badge>
+                  <Button variant="outline" size="sm" onClick={() => handleViewDetails(sale)}>
+                    Ver Detalhes
+                  </Button>
+                </div>
               </div>
             </CardHeader>
             <CardContent>

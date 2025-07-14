@@ -1,13 +1,16 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Plus, User, Store, TrendingUp, Eye } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { useToast } from '@/hooks/use-toast';
+import SellerForm from '@/components/forms/SellerForm';
 
 const Sellers = () => {
-  const sellers = [
+  const { toast } = useToast();
+  const [sellers, setSellers] = useState([
     { 
       id: '1', 
       name: 'João Silva', 
@@ -38,7 +41,43 @@ const Sellers = () => {
       revenue: 2840.00,
       lastLogin: '2024-01-10 09:15'
     },
-  ];
+  ]);
+  const [showForm, setShowForm] = useState(false);
+  const [editingSeller, setEditingSeller] = useState(null);
+
+  const handleNewSeller = () => {
+    setEditingSeller(null);
+    setShowForm(true);
+  };
+
+  const handleViewDetails = (seller: any) => {
+    toast({
+      title: "Detalhes do Vendedor",
+      description: `Visualizando detalhes de ${seller.name}`,
+    });
+  };
+
+  const handleToggleStatus = (seller: any) => {
+    setSellers(sellers.map(s => 
+      s.id === seller.id ? { ...s, active: !s.active } : s
+    ));
+    toast({
+      title: seller.active ? "Vendedor Bloqueado" : "Vendedor Ativado",
+      description: `${seller.name} foi ${seller.active ? 'bloqueado' : 'ativado'} com sucesso!`,
+    });
+  };
+
+  const handleSaveSeller = (sellerData: any) => {
+    if (editingSeller) {
+      setSellers(sellers.map(seller => 
+        seller.id === editingSeller.id ? { ...seller, ...sellerData } : seller
+      ));
+    } else {
+      setSellers([...sellers, sellerData]);
+    }
+    setShowForm(false);
+    setEditingSeller(null);
+  };
 
   return (
     <div className="space-y-6">
@@ -47,7 +86,7 @@ const Sellers = () => {
           <h1 className="text-3xl font-bold text-foreground">Gerenciar Vendedores</h1>
           <p className="text-muted-foreground">Administre todos os vendedores do sistema</p>
         </div>
-        <Button>
+        <Button onClick={handleNewSeller}>
           <Plus className="mr-2 h-4 w-4" />
           Novo Vendedor
         </Button>
@@ -95,13 +134,14 @@ const Sellers = () => {
                   <div className="text-sm text-muted-foreground">Último acesso</div>
                 </div>
                 <div className="flex gap-2">
-                  <Button variant="outline" size="sm" className="flex-1">
+                  <Button variant="outline" size="sm" className="flex-1" onClick={() => handleViewDetails(seller)}>
                     <Eye className="mr-1 h-4 w-4" />
                     Ver Detalhes
                   </Button>
                   <Button 
                     variant={seller.active ? "destructive" : "default"} 
                     size="sm"
+                    onClick={() => handleToggleStatus(seller)}
                   >
                     {seller.active ? "Bloquear" : "Ativar"}
                   </Button>
@@ -111,6 +151,14 @@ const Sellers = () => {
           </Card>
         ))}
       </div>
+      
+      {showForm && (
+        <SellerForm
+          seller={editingSeller}
+          onSave={handleSaveSeller}
+          onCancel={() => setShowForm(false)}
+        />
+      )}
     </div>
   );
 };

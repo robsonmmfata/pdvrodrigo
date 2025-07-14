@@ -1,12 +1,14 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { CreditCard, User, Clock, CheckCircle, XCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { useToast } from '@/hooks/use-toast';
 
 const Credits = () => {
-  const credits = [
+  const { toast } = useToast();
+  const [credits, setCredits] = useState([
     {
       id: 'C001',
       customer: 'João Silva',
@@ -34,7 +36,26 @@ const Credits = () => {
       date: '2024-01-13 10:15',
       used: true
     },
-  ];
+  ]);
+
+  const handleApprove = (creditId: string) => {
+    setCredits(credits.map(credit => 
+      credit.id === creditId ? { ...credit, status: 'Aprovado' } : credit
+    ));
+    toast({
+      title: "Crédito Aprovado",
+      description: `Crédito ${creditId} foi aprovado com sucesso!`,
+    });
+  };
+
+  const handleReject = (creditId: string) => {
+    setCredits(credits.filter(credit => credit.id !== creditId));
+    toast({
+      title: "Crédito Rejeitado",
+      description: `Crédito ${creditId} foi rejeitado.`,
+      variant: "destructive"
+    });
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -135,10 +156,10 @@ const Credits = () => {
               </div>
               {credit.status === 'Pendente' && (
                 <div className="flex gap-2 mt-4">
-                  <Button size="sm" variant="default">
+                  <Button size="sm" variant="default" onClick={() => handleApprove(credit.id)}>
                     Aprovar
                   </Button>
-                  <Button size="sm" variant="outline">
+                  <Button size="sm" variant="outline" onClick={() => handleReject(credit.id)}>
                     Rejeitar
                   </Button>
                 </div>

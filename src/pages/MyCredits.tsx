@@ -4,8 +4,10 @@ import { CreditCard, Clock, Check, X } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { useToast } from '@/hooks/use-toast';
 
 const MyCredits = () => {
+  const { toast } = useToast();
   const availableCredits = 45.80;
   const pendingCredits = 12.50;
 

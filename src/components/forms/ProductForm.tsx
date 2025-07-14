@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { X } from 'lucide-react';
+import ImageUpload from './ImageUpload';
 
 interface Product {
   id?: string;
@@ -18,6 +19,7 @@ interface Product {
   minStock: number;
   description: string;
   active: boolean;
+  image?: string;
 }
 
 interface ProductFormProps {
@@ -36,6 +38,7 @@ export const ProductForm = ({ product, onSave, onCancel }: ProductFormProps) => 
     minStock: product?.minStock || 5,
     description: product?.description || '',
     active: product?.active !== false,
+    image: product?.image || '',
     ...product
   });
 
@@ -132,6 +135,12 @@ export const ProductForm = ({ product, onSave, onCancel }: ProductFormProps) => 
                 onChange={(e) => setFormData({...formData, minStock: parseInt(e.target.value) || 0})}
               />
             </div>
+          </div>
+          <div>
+            <ImageUpload
+              onImageSelect={(imageUrl) => setFormData({...formData, image: imageUrl})}
+              currentImage={formData.image}
+            />
           </div>
           <div>
             <Label htmlFor="description">Descrição</Label>
