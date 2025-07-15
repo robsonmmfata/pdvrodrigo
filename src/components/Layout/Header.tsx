@@ -24,8 +24,35 @@ export const Header = () => {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchTerm.trim()) {
-      // Implementar busca global aqui
-      console.log('Buscando por:', searchTerm);
+      // Implementar busca global funcional
+      if (user?.role === 'admin') {
+        // Admin pode buscar em tudo
+        if (searchTerm.toLowerCase().includes('cliente')) {
+          navigate('/customers');
+        } else if (searchTerm.toLowerCase().includes('produto')) {
+          navigate('/products');
+        } else if (searchTerm.toLowerCase().includes('venda')) {
+          navigate('/sales');
+        } else if (searchTerm.toLowerCase().includes('loja')) {
+          navigate('/stores');
+        } else {
+          navigate('/customers'); // Default para clientes
+        }
+      } else if (user?.role === 'seller') {
+        // Vendedor pode buscar clientes, produtos, vendas
+        if (searchTerm.toLowerCase().includes('produto')) {
+          navigate('/products');
+        } else if (searchTerm.toLowerCase().includes('venda')) {
+          navigate('/sales-history');
+        } else {
+          navigate('/customers'); // Default para clientes
+        }
+      } else {
+        // Cliente busca em suas próprias informações
+        navigate('/my-purchases');
+      }
+      
+      console.log('Busca global realizada:', searchTerm);
     }
   };
 
