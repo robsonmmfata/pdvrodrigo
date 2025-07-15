@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Package, Plus, Edit, Trash2, AlertTriangle, Search } from 'lucide-react';
+import { Package, Plus, Edit, Trash2, AlertTriangle, Search, X } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -50,31 +50,139 @@ const Inventory = () => {
     }
   };
 
+  const [showForm, setShowForm] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<any>(null);
+  const [products, setProducts] = useState(inventory);
+
   const handleNewProduct = () => {
-    toast({
-      title: "Novo Produto",
-      description: "Abrindo formulário para cadastrar novo produto...",
-    });
+    setEditingProduct(null);
+    setShowForm(true);
   };
 
   const handleEditProduct = (product: any) => {
-    toast({
-      title: "Editar Produto",
-      description: `Editando ${product.name}...`,
-    });
+    setEditingProduct(product);
+    setShowForm(true);
   };
 
   const handleDeleteProduct = (product: any) => {
+    if (window.confirm(`Tem certeza que deseja excluir ${product.name}?`)) {
+      setProducts(prev => prev.filter(p => p.id !== product.id));
+      toast({
+        title: "Produto excluído",
+        description: `${product.name} foi removido com sucesso.`
+      });
+    }
+  };
+
+  const handleSaveProduct = (productData: any) => {
+    if (editingProduct) {
+      setProducts(prev => prev.map(p => 
+        p.id === editingProduct.id ? { ...p, ...productData } : p
+      ));
+    } else {
+      const newProduct = {
+        ...productData,
+        id: Date.now(),
+      };
+      setProducts(prev => [...prev, newProduct]);
+    }
+    setShowForm(false);
+    setEditingProduct(null);
     toast({
-      title: "Excluir Produto",
-      description: `Tem certeza que deseja excluir ${product.name}?`,
+      title: editingProduct ? "Produto atualizado" : "Produto criado",
+      description: `${productData.name} foi ${editingProduct ? 'atualizado' : 'criado'} com sucesso.`
     });
   };
 
-  const filteredInventory = inventory.filter(product => 
+  const filteredInventory = products.filter(product => 
     product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     product.category.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  if (showForm) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground">
+              {editingProduct ? 'Editar Produto' : 'Novo Produto'}
+            </h1>
+            <p className="text-muted-foreground">
+              {editingProduct ? 'Atualize as informações do produto' : 'Cadastre um novo produto no estoque'}
+            </p>
+          </div>
+          <Button variant="outline" onClick={() => setShowForm(false)}>
+            <X className="mr-2 h-4 w-4" />
+            Cancelar
+          </Button>
+        </div>
+        <Card>
+          <CardContent className="pt-6">
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-medium">Nome do Produto</label>
+                  <Input 
+                    defaultValue={editingProduct?.name || ''}
+                    placeholder="Digite o nome do produto"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Categoria</label>
+                  <Input 
+                    defaultValue={editingProduct?.category || ''}
+                    placeholder="Digite a categoria"
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="text-sm font-medium">Estoque Atual</label>
+                  <Input 
+                    type="number"
+                    defaultValue={editingProduct?.stock || ''}
+                    placeholder="Quantidade em estoque"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Estoque Mínimo</label>
+                  <Input 
+                    type="number"
+                    defaultValue={editingProduct?.minStock || ''}
+                    placeholder="Estoque mínimo"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Preço Unitário</label>
+                  <Input 
+                    type="number"
+                    step="0.01"
+                    defaultValue={editingProduct?.unitPrice || ''}
+                    placeholder="Preço do produto"
+                  />
+                </div>
+              </div>
+              <div className="flex justify-end gap-2">
+                <Button variant="outline" onClick={() => setShowForm(false)}>
+                  Cancelar
+                </Button>
+                <Button onClick={() => handleSaveProduct({
+                  name: 'Produto Exemplo',
+                  category: 'Categoria',
+                  stock: 10,
+                  minStock: 5,
+                  unitPrice: 29.90,
+                  active: true
+                })}>
+                  {editingProduct ? 'Atualizar' : 'Salvar'} Produto
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

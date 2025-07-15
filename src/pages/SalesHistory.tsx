@@ -53,7 +53,7 @@ const SalesHistory = () => {
   const handleViewDetails = (sale: any) => {
     toast({
       title: "Detalhes da Venda",
-      description: `Visualizando venda ${sale.id} - ${sale.customer}`,
+      description: `Venda ${sale.id}: ${sale.customer} - R$ ${sale.total.toFixed(2)} (${sale.items} itens)`,
     });
   };
 

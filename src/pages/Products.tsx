@@ -237,20 +237,22 @@ const Products = () => {
                     <p className="text-sm text-muted-foreground">Descrição</p>
                     <p className="font-medium text-sm">{product.description}</p>
                   </div>
-                  <div className="flex gap-2">
-                    <Button variant="outline" size="sm" onClick={() => handleViewDetails(product)}>
-                      <Eye className="h-4 w-4 mr-1" />
-                      Ver
-                    </Button>
-                    <Button variant="outline" size="sm" onClick={() => handleEditProduct(product)}>
-                      <Edit className="h-4 w-4 mr-1" />
-                      Editar
-                    </Button>
-                    <Button variant="outline" size="sm" onClick={() => handleDeleteProduct(product)}>
-                      <Trash2 className="h-4 w-4 mr-1" />
-                      Excluir
-                    </Button>
-                  </div>
+                   <div className="flex flex-col gap-2">
+                     <div className="flex gap-2">
+                       <Button variant="outline" size="sm" onClick={() => handleViewDetails(product)}>
+                         <Eye className="h-4 w-4 mr-1" />
+                         Ver
+                       </Button>
+                       <Button variant="outline" size="sm" onClick={() => handleEditProduct(product)}>
+                         <Edit className="h-4 w-4 mr-1" />
+                         Editar
+                       </Button>
+                     </div>
+                     <Button variant="outline" size="sm" onClick={() => handleDeleteProduct(product)}>
+                       <Trash2 className="h-4 w-4 mr-1" />
+                       Excluir
+                     </Button>
+                   </div>
                 </div>
               </CardContent>
             </Card>

@@ -36,16 +36,30 @@ const MyPoints = () => {
   ];
 
   const handleRedeemDiscount = () => {
-    toast({
-      title: "Desconto Resgatado!",
-      description: "Você resgatou R$ 10,00 em desconto usando 1000 pontos.",
-    });
+    if (pointsBalance >= 1000) {
+      toast({
+        title: "Desconto Resgatado!",
+        description: "Você resgatou R$ 10,00 em desconto usando 1000 pontos.",
+      });
+    } else {
+      toast({
+        title: "Pontos Insuficientes",
+        description: `Você precisa de pelo menos 1000 pontos. Você tem ${pointsBalance} pontos.`,
+        variant: "destructive"
+      });
+    }
   };
 
   const handleViewRewards = () => {
+    const rewardsList = [
+      "R$ 5,00 de desconto (500 pontos)",
+      "R$ 10,00 de desconto (1000 pontos)",
+      "R$ 20,00 de desconto (2000 pontos)",
+      "Produto grátis categoria A (1500 pontos)"
+    ];
     toast({
       title: "Recompensas Disponíveis",
-      description: "Visualizando todas as recompensas disponíveis para resgate.",
+      description: rewardsList.join(", "),
     });
   };
 
