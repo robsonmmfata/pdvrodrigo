@@ -15,14 +15,14 @@ const MyPurchases = () => {
     {
       id: 'V2470',
       date: '2024-01-15 14:30',
-      total: 157.80,
+      total: 8157.80,
       items: [
-        { name: 'Smartphone Galaxy A54', quantity: 1, unitPrice: 129.90, total: 129.90 },
-        { name: 'Capa Protetora', quantity: 1, unitPrice: 27.90, total: 27.90 }
+        { name: 'iPhone 15 Pro Max 256GB', quantity: 1, unitPrice: 7999.99, total: 7999.99 },
+        { name: 'Capa MagSafe Transparente', quantity: 1, unitPrice: 157.81, total: 157.81 }
       ],
       paymentMethod: 'PIX',
-      pointsEarned: 15,
-      creditsUsed: 25.00,
+      pointsEarned: 815,
+      creditsUsed: 0,
       status: 'completed',
       seller: 'João Silva',
       store: 'Loja Centro'
@@ -30,12 +30,12 @@ const MyPurchases = () => {
     {
       id: 'V2463',
       date: '2024-01-14 11:20',
-      total: 89.50,
+      total: 4999.99,
       items: [
-        { name: 'Camiseta Polo', quantity: 2, unitPrice: 44.75, total: 89.50 }
+        { name: 'iPhone 14 128GB Azul', quantity: 1, unitPrice: 4999.99, total: 4999.99 }
       ],
       paymentMethod: 'Cartão',
-      pointsEarned: 8,
+      pointsEarned: 499,
       creditsUsed: 0,
       status: 'completed',
       seller: 'Maria Santos',
@@ -44,14 +44,14 @@ const MyPurchases = () => {
     {
       id: 'V2458',
       date: '2024-01-13 16:45',
-      total: 234.90,
+      total: 4699.97,
       items: [
-        { name: 'Cafeteira Elétrica', quantity: 1, unitPrice: 159.90, total: 159.90 },
-        { name: 'Filtros de Papel', quantity: 1, unitPrice: 15.00, total: 15.00 },
-        { name: 'Café Premium 500g', quantity: 2, unitPrice: 30.00, total: 60.00 }
+        { name: 'iPhone 13 128GB Rosa', quantity: 1, unitPrice: 3799.99, total: 3799.99 },
+        { name: 'AirPods 3ª Geração', quantity: 1, unitPrice: 299.99, total: 299.99 },
+        { name: 'AppleCare+ para iPhone', quantity: 1, unitPrice: 599.99, total: 599.99 }
       ],
       paymentMethod: 'Dinheiro',
-      pointsEarned: 23,
+      pointsEarned: 469,
       creditsUsed: 0,
       status: 'completed',
       seller: 'Pedro Costa',

@@ -31,40 +31,51 @@ const Products = () => {
   const [products, setProducts] = useState<Product[]>([
     {
       id: '1',
-      name: 'Smartphone Galaxy A54',
-      category: 'Eletrônicos',
-      price: 1299.99,
+      name: 'iPhone 15 Pro Max 256GB',
+      category: 'Smartphones',
+      price: 7999.99,
       stock: 15,
       minStock: 5,
-      description: 'Smartphone Samsung Galaxy A54 128GB',
+      description: 'iPhone 15 Pro Max 256GB - Titânio Natural com Chip A17 Pro',
       active: true,
       sales: 23
     },
     {
       id: '2',
-      name: 'Camiseta Polo',
-      category: 'Roupas',
-      price: 89.90,
-      stock: 3,
+      name: 'iPhone 14 128GB',
+      category: 'Smartphones',
+      price: 4999.99,
+      stock: 8,
       minStock: 10,
-      description: 'Camiseta polo masculina 100% algodão',
+      description: 'iPhone 14 128GB - Azul com Chip A15 Bionic',
       active: true,
-      sales: 45
+      sales: 12
     },
     {
       id: '3',
-      name: 'Cafeteira Elétrica',
-      category: 'Casa e Jardim',
-      price: 159.90,
-      stock: 0,
+      name: 'iPhone 13 128GB',
+      category: 'Smartphones',
+      price: 3799.99,
+      stock: 12,
+      minStock: 8,
+      description: 'iPhone 13 128GB - Rosa com Chip A15 Bionic',
+      active: true,
+      sales: 18
+    },
+    {
+      id: '4',
+      name: 'iPhone SE 64GB',
+      category: 'Smartphones',
+      price: 2299.99,
+      stock: 6,
       minStock: 5,
-      description: 'Cafeteira elétrica 12 xícaras',
-      active: false,
-      sales: 12
+      description: 'iPhone SE 3ª geração 64GB - Meia-noite com Chip A15 Bionic',
+      active: true,
+      sales: 9
     }
   ]);
 
-  const categories = ['all', 'Eletrônicos', 'Roupas', 'Casa e Jardim', 'Esportes', 'Livros', 'Alimentação'];
+  const categories = ['all', 'Smartphones', 'Acessórios', 'Eletrônicos'];
 
   const filteredProducts = products.filter(product => {
     const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||

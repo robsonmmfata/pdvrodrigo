@@ -211,10 +211,10 @@ export const Dashboard = () => {
           <CardContent>
             <div className="space-y-4">
               {[
-                { name: 'Produto A', stock: 3, min: 10 },
-                { name: 'Produto B', stock: 1, min: 5 },
-                { name: 'Produto C', stock: 7, min: 15 },
-                { name: 'Produto D', stock: 2, min: 8 },
+                { name: 'iPhone 15 Pro Max 256GB', stock: 3, min: 10 },
+                { name: 'iPhone 14 128GB', stock: 1, min: 5 },
+                { name: 'iPhone 13 128GB', stock: 7, min: 15 },
+                { name: 'iPhone SE 64GB', stock: 2, min: 8 },
               ].map((product, i) => (
                 <div key={i} className="flex items-center justify-between p-2 hover:bg-muted/50 rounded-lg cursor-pointer" onClick={() => handleProductClick(product.name)}>
                   <div>

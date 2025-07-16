@@ -23,7 +23,7 @@ const mockNotifications: Notification[] = [
     id: '1',
     type: 'warning',
     title: 'Estoque Baixo',
-    message: 'Produto A está com apenas 3 unidades em estoque',
+    message: 'iPhone 14 128GB está com apenas 8 unidades em estoque',
     timestamp: new Date(Date.now() - 1000 * 60 * 30),
     read: false,
     actionUrl: '/products'

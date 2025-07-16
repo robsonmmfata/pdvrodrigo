@@ -41,9 +41,10 @@ export const NewSale = () => {
   ];
 
   const mockProducts = [
-    { id: '1', name: 'Produto A', price: 25.90, stock: 50 },
-    { id: '2', name: 'Produto B', price: 15.00, stock: 30 },
-    { id: '3', name: 'Produto C', price: 45.50, stock: 20 },
+    { id: '1', name: 'iPhone 15 Pro Max 256GB', price: 7999.99, stock: 15 },
+    { id: '2', name: 'iPhone 14 128GB', price: 4999.99, stock: 8 },
+    { id: '3', name: 'iPhone 13 128GB', price: 3799.99, stock: 12 },
+    { id: '4', name: 'iPhone SE 64GB', price: 2299.99, stock: 6 },
   ];
 
   const searchCustomer = () => {

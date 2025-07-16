@@ -14,30 +14,39 @@ const Inventory = () => {
   const inventory = [
     {
       id: 1,
-      name: 'Produto A',
-      category: 'Categoria 1',
+      name: 'iPhone 15 Pro Max 256GB',
+      category: 'Smartphones',
       stock: 15,
       minStock: 10,
-      unitPrice: 25.90,
+      unitPrice: 7999.99,
       active: true
     },
     {
       id: 2,
-      name: 'Produto B',
-      category: 'Categoria 2',
-      stock: 3,
+      name: 'iPhone 14 128GB',
+      category: 'Smartphones',
+      stock: 8,
       minStock: 5,
-      unitPrice: 45.50,
+      unitPrice: 4999.99,
       active: true
     },
     {
       id: 3,
-      name: 'Produto C',
-      category: 'Categoria 1',
-      stock: 0,
+      name: 'iPhone 13 128GB',
+      category: 'Smartphones',
+      stock: 12,
       minStock: 8,
-      unitPrice: 89.90,
-      active: false
+      unitPrice: 3799.99,
+      active: true
+    },
+    {
+      id: 4,
+      name: 'iPhone SE 64GB',
+      category: 'Smartphones',
+      stock: 6,
+      minStock: 5,
+      unitPrice: 2299.99,
+      active: true
     },
   ];
 

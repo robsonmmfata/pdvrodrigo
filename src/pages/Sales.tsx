@@ -15,31 +15,41 @@ const Sales = () => {
       id: 'V001',
       customer: 'João Silva',
       seller: 'Maria Santos',
-      total: 150.50,
+      total: 8157.80,
       payment: 'Pix',
       date: '2024-01-15 14:30',
-      items: 3,
+      items: 2,
       status: 'Concluída'
     },
     {
       id: 'V002',
       customer: 'Ana Costa',
       seller: 'Pedro Lima',
-      total: 89.90,
+      total: 4999.99,
       payment: 'Cartão',
       date: '2024-01-15 15:45',
-      items: 2,
+      items: 1,
       status: 'Concluída'
     },
     {
       id: 'V003',
       customer: 'Carlos Oliveira',
       seller: 'Maria Santos',
-      total: 245.80,
+      total: 4699.97,
       payment: 'Dinheiro',
       date: '2024-01-15 16:20',
-      items: 5,
-      status: 'Pendente'
+      items: 3,
+      status: 'Concluída'
+    },
+    {
+      id: 'V004',
+      customer: 'Fernanda Lima',
+      seller: 'João Silva',
+      total: 2299.99,
+      payment: 'PIX',
+      date: '2024-01-16 10:15',
+      items: 1,
+      status: 'Concluída'
     },
   ]);
   const [searchTerm, setSearchTerm] = useState('');
