@@ -50,13 +50,12 @@ const Inventory = () => {
     },
   ];
 
-  const handleSearch = () => {
-    if (searchTerm.trim()) {
-      toast({
-        title: "Busca realizada",
-        description: `Buscando por: "${searchTerm}"`,
-      });
-    }
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const clearSearch = () => {
+    setSearchTerm('');
   };
 
   const [showForm, setShowForm] = useState(false);
@@ -206,17 +205,20 @@ const Inventory = () => {
               placeholder="Buscar produtos..." 
               className="w-64 pr-10" 
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+              onChange={handleSearch}
             />
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="absolute right-0 top-0 h-full px-3"
-              onClick={handleSearch}
-            >
-              <Search className="h-4 w-4" />
-            </Button>
+            {searchTerm ? (
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="absolute right-0 top-0 h-full px-3"
+                onClick={clearSearch}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            ) : (
+              <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            )}
           </div>
           <Button onClick={handleNewProduct}>
             <Plus className="mr-2 h-4 w-4" />
@@ -288,7 +290,11 @@ const Inventory = () => {
 
       {filteredInventory.length === 0 && searchTerm && (
         <div className="text-center py-8">
+          <Package className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
           <p className="text-muted-foreground">Nenhum produto encontrado para "{searchTerm}"</p>
+          <Button variant="outline" onClick={clearSearch} className="mt-2">
+            Limpar busca
+          </Button>
         </div>
       )}
     </div>

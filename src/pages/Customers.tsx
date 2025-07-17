@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Plus, User, Phone, Calendar, Award, CreditCard, Search, Edit, Eye, Trash2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,6 +7,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { CustomerForm } from '@/components/forms/CustomerForm';
+import { CustomerHistory } from '@/components/CustomerHistory';
 
 interface Customer {
   id: string;
@@ -26,7 +26,9 @@ const Customers = () => {
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
   const [showForm, setShowForm] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
   const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
   
   const [customers, setCustomers] = useState<Customer[]>([
     { 
@@ -95,17 +97,17 @@ const Customers = () => {
 
   const handleSaveCustomer = (customerData: any) => {
     if (editingCustomer) {
-      // Editar cliente existente
       setCustomers(prev => prev.map(c => 
         c.id === editingCustomer.id 
           ? { ...c, ...customerData }
           : c
       ));
     } else {
-      // Criar novo cliente
       const newCustomer: Customer = {
         ...customerData,
         id: Date.now().toString(),
+        loyaltyPoints: 0,
+        credits: 0,
         totalPurchases: 0,
         lastPurchase: '',
         totalSpent: 0
@@ -117,10 +119,8 @@ const Customers = () => {
   };
 
   const handleViewHistory = (customer: Customer) => {
-    toast({
-      title: "Histórico do Cliente",
-      description: `Visualizando histórico de compras de ${customer.name}`
-    });
+    setSelectedCustomer(customer);
+    setShowHistory(true);
   };
 
   const formatPhone = (phone: string) => {
@@ -150,6 +150,20 @@ const Customers = () => {
           onCancel={() => {
             setShowForm(false);
             setEditingCustomer(null);
+          }}
+        />
+      </div>
+    );
+  }
+
+  if (showHistory && selectedCustomer) {
+    return (
+      <div className="space-y-6">
+        <CustomerHistory
+          customer={selectedCustomer}
+          onClose={() => {
+            setShowHistory(false);
+            setSelectedCustomer(null);
           }}
         />
       </div>

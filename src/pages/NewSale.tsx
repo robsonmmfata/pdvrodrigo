@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -8,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { Plus, Trash2, Search, MessageCircle, CreditCard } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import { NewCustomerModal } from '@/components/NewCustomerModal';
 
 interface SaleItem {
   id: string;
@@ -33,12 +33,14 @@ export const NewSale = () => {
   const [paymentMethod, setPaymentMethod] = useState('');
   const [cashReceived, setCashReceived] = useState('');
   const [leaveChangeAsCredit, setLeaveChangeAsCredit] = useState(false);
-
-  // Mock data
-  const mockCustomers: Customer[] = [
+  const [showNewCustomerModal, setShowNewCustomerModal] = useState(false);
+  const [allCustomers, setAllCustomers] = useState<Customer[]>([
     { id: '1', name: 'João Silva', whatsapp: '11999999999', loyaltyPoints: 150, storeCredit: 25.50 },
     { id: '2', name: 'Maria Santos', whatsapp: '11888888888', loyaltyPoints: 87, storeCredit: 0 },
-  ];
+    { id: '3', name: 'Ana Oliveira', whatsapp: '11999887766', loyaltyPoints: 1250, storeCredit: 45.50 },
+    { id: '4', name: 'Carlos Mendes', whatsapp: '11888776655', loyaltyPoints: 850, storeCredit: 0 },
+    { id: '5', name: 'Fernanda Lima', whatsapp: '11777665544', loyaltyPoints: 320, storeCredit: 12.75 },
+  ]);
 
   const mockProducts = [
     { id: '1', name: 'iPhone 15 Pro Max 256GB', price: 7999.99, stock: 15 },
@@ -48,7 +50,7 @@ export const NewSale = () => {
   ];
 
   const searchCustomer = () => {
-    const found = mockCustomers.find(c => 
+    const found = allCustomers.find(c => 
       c.whatsapp.includes(customerSearch) || 
       c.name.toLowerCase().includes(customerSearch.toLowerCase())
     );
@@ -58,10 +60,15 @@ export const NewSale = () => {
     } else {
       toast({ 
         title: "Cliente não encontrado", 
-        description: "Deseja cadastrar um novo cliente?",
+        description: "Cliente não encontrado. Deseja cadastrar um novo cliente?",
         variant: "destructive"
       });
     }
+  };
+
+  const handleNewCustomer = (newCustomer: Customer) => {
+    setAllCustomers(prev => [...prev, newCustomer]);
+    setCustomer(newCustomer);
   };
 
   const addItem = () => {
@@ -172,13 +179,6 @@ export const NewSale = () => {
     setLeaveChangeAsCredit(false);
   };
 
-  const registerNewCustomer = () => {
-    toast({
-      title: "Cadastrar Cliente",
-      description: "Abrindo formulário de cadastro de cliente...",
-    });
-  };
-
   const sendWhatsApp = () => {
     if (!customer) {
       toast({
@@ -198,6 +198,15 @@ export const NewSale = () => {
       description: `Mensagem enviada para ${customer.name}`,
     });
   };
+
+  if (showNewCustomerModal) {
+    return (
+      <NewCustomerModal
+        onClose={() => setShowNewCustomerModal(false)}
+        onSave={handleNewCustomer}
+      />
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -220,11 +229,39 @@ export const NewSale = () => {
                 value={customerSearch}
                 onChange={(e) => setCustomerSearch(e.target.value)}
                 className="flex-1"
+                onKeyPress={(e) => e.key === 'Enter' && searchCustomer()}
               />
               <Button onClick={searchCustomer} variant="outline">
                 <Search className="h-4 w-4" />
               </Button>
             </div>
+
+            {/* Lista de sugestões */}
+            {customerSearch && !customer && (
+              <div className="max-h-32 overflow-y-auto border rounded-lg">
+                {allCustomers
+                  .filter(c => 
+                    c.name.toLowerCase().includes(customerSearch.toLowerCase()) ||
+                    c.whatsapp.includes(customerSearch)
+                  )
+                  .slice(0, 5)
+                  .map(c => (
+                    <div
+                      key={c.id}
+                      className="p-2 hover:bg-muted cursor-pointer border-b last:border-b-0"
+                      onClick={() => {
+                        setCustomer(c);
+                        setCustomerSearch('');
+                        toast({ title: "Cliente selecionado!", description: `${c.name} foi selecionado.` });
+                      }}
+                    >
+                      <p className="font-medium">{c.name}</p>
+                      <p className="text-sm text-muted-foreground">{c.whatsapp}</p>
+                    </div>
+                  ))
+                }
+              </div>
+            )}
 
             {customer && (
               <div className="p-4 bg-green-50 rounded-lg border border-green-200">
@@ -245,7 +282,11 @@ export const NewSale = () => {
               </div>
             )}
 
-            <Button variant="outline" className="w-full" onClick={registerNewCustomer}>
+            <Button 
+              variant="outline" 
+              className="w-full" 
+              onClick={() => setShowNewCustomerModal(true)}
+            >
               + Cadastrar Novo Cliente
             </Button>
           </CardContent>

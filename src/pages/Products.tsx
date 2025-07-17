@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Plus, Search, Filter, Edit, Trash2, Eye, Package } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { ProductForm } from '@/components/forms/ProductForm';
+import { ProductDetails } from '@/components/ProductDetails';
 
 interface Product {
   id: string;
@@ -26,7 +26,9 @@ const Products = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [showForm, setShowForm] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   
   const [products, setProducts] = useState<Product[]>([
     {
@@ -106,14 +108,12 @@ const Products = () => {
 
   const handleSaveProduct = (productData: any) => {
     if (editingProduct) {
-      // Editar produto existente
       setProducts(prev => prev.map(p => 
         p.id === editingProduct.id 
           ? { ...p, ...productData }
           : p
       ));
     } else {
-      // Criar novo produto
       const newProduct: Product = {
         ...productData,
         id: Date.now().toString(),
@@ -126,10 +126,8 @@ const Products = () => {
   };
 
   const handleViewDetails = (product: Product) => {
-    toast({
-      title: "Detalhes do Produto",
-      description: `Visualizando ${product.name} - ${product.sales} vendas realizadas`
-    });
+    setSelectedProduct(product);
+    setShowDetails(true);
   };
 
   const getStockStatus = (product: Product) => {
@@ -147,6 +145,20 @@ const Products = () => {
           onCancel={() => {
             setShowForm(false);
             setEditingProduct(null);
+          }}
+        />
+      </div>
+    );
+  }
+
+  if (showDetails && selectedProduct) {
+    return (
+      <div className="space-y-6">
+        <ProductDetails
+          product={selectedProduct}
+          onClose={() => {
+            setShowDetails(false);
+            setSelectedProduct(null);
           }}
         />
       </div>
