@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useToast } from '@/hooks/use-toast';
 import SellerForm from '@/components/forms/SellerForm';
+import { SellerDetails } from '@/components/SellerDetails';
 
 const Sellers = () => {
   const { toast } = useToast();
@@ -50,11 +51,19 @@ const Sellers = () => {
     setShowForm(true);
   };
 
+  const [showSellerDetails, setShowSellerDetails] = useState(false);
+  const [selectedSeller, setSelectedSeller] = useState(null);
+
   const handleViewDetails = (seller: any) => {
-    toast({
-      title: "Detalhes do Vendedor",
-      description: `Visualizando detalhes de ${seller.name}`,
+    setSelectedSeller({
+      ...seller,
+      phone: '(11) 99999-9999',
+      role: 'Vendedor',
+      storeId: '1',
+      storeName: seller.store,
+      hireDate: '2023-01-15'
     });
+    setShowSellerDetails(true);
   };
 
   const handleToggleStatus = (seller: any) => {
@@ -158,6 +167,18 @@ const Sellers = () => {
           onSave={handleSaveSeller}
           onCancel={() => setShowForm(false)}
         />
+      )}
+      
+      {showSellerDetails && selectedSeller && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <SellerDetails
+            seller={selectedSeller}
+            onClose={() => {
+              setShowSellerDetails(false);
+              setSelectedSeller(null);
+            }}
+          />
+        </div>
       )}
     </div>
   );

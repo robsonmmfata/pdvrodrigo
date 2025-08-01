@@ -163,7 +163,7 @@ export const NewSale = () => {
       stockMovements
     };
 
-    console.log('Venda finalizada com baixa automática no estoque:', saleData);
+    // Venda finalizada com baixa automática no estoque
     
     toast({ 
       title: "Venda finalizada com sucesso!", 

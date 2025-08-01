@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import StoreForm from '@/components/forms/StoreForm';
+import { StoreReports } from '@/components/StoreReports';
 
 const Stores = () => {
   const { toast } = useToast();
@@ -39,11 +40,17 @@ const Stores = () => {
     setEditingStore(null);
   };
 
+  const [showStoreReports, setShowStoreReports] = useState(false);
+  const [selectedStore, setSelectedStore] = useState(null);
+
   const handleViewReports = (store: any) => {
-    toast({
-      title: "Relatórios da Loja",
-      description: `Visualizando relatórios de ${store.name}`,
+    setSelectedStore({
+      ...store,
+      address: 'Rua Exemplo, 123 - Centro',
+      phone: '(11) 3333-4444',
+      email: `${store.name.toLowerCase().replace(/\s+/g, '')}@loja.com`
     });
+    setShowStoreReports(true);
   };
 
   return (
@@ -113,6 +120,18 @@ const Stores = () => {
           onSave={handleSaveStore}
           onCancel={() => setShowForm(false)}
         />
+      )}
+      
+      {showStoreReports && selectedStore && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <StoreReports
+            store={selectedStore}
+            onClose={() => {
+              setShowStoreReports(false);
+              setSelectedStore(null);
+            }}
+          />
+        </div>
       )}
     </div>
   );

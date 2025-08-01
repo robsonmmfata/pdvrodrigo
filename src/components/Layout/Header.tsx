@@ -52,7 +52,7 @@ export const Header = () => {
         navigate('/my-purchases');
       }
       
-      console.log('Busca global realizada:', searchTerm);
+      // Busca global realizada
     }
   };
 

@@ -63,10 +63,18 @@ const Sales = () => {
   };
 
   const handleViewDetails = (sale: any) => {
-    toast({
-      title: "Detalhes da Venda",
-      description: `Visualizando venda ${sale.id} - ${sale.customer}`,
-    });
+    const saleDetails = `
+Venda: ${sale.id}
+Cliente: ${sale.customer}
+Vendedor: ${sale.seller}
+Total: R$ ${sale.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+Pagamento: ${sale.payment}
+Data: ${sale.date}
+Itens: ${sale.items} produtos
+Status: ${sale.status}
+    `;
+    
+    alert(saleDetails);
   };
 
   const filteredSales = sales.filter(sale => {
