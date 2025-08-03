@@ -15,6 +15,7 @@ export const Header = () => {
   const navigate = useNavigate();
   const { toggleSidebar } = useSidebar();
   const [searchTerm, setSearchTerm] = useState('');
+  const [showNotifications, setShowNotifications] = useState(false);
 
   const handleLogout = () => {
     logout();
@@ -100,7 +101,9 @@ export const Header = () => {
 
           <div className="flex items-center space-x-2">
             {/* Centro de Notificações */}
-            <NotificationCenter onNavigate={handleNotificationNavigate} />
+            <Button variant="ghost" size="icon" onClick={() => setShowNotifications(true)}>
+              <Bell className="h-4 w-4" />
+            </Button>
 
             {/* Menu do Usuário */}
             <DropdownMenu>
@@ -165,6 +168,12 @@ export const Header = () => {
           </div>
         </div>
       </div>
+      
+      {showNotifications && (
+        <NotificationCenter 
+          onClose={() => setShowNotifications(false)}
+        />
+      )}
     </header>
   );
 };
