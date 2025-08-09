@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import Filters from '@/components/ui/filters';
 
 const Sales = () => {
@@ -54,6 +55,8 @@ const Sales = () => {
   ]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filters, setFilters] = useState<any>({});
+  const [showSaleDialog, setShowSaleDialog] = useState(false);
+  const [selectedSale, setSelectedSale] = useState<any | null>(null);
 
   const handleSearch = () => {
     toast({
@@ -63,18 +66,8 @@ const Sales = () => {
   };
 
   const handleViewDetails = (sale: any) => {
-    const saleDetails = `
-Venda: ${sale.id}
-Cliente: ${sale.customer}
-Vendedor: ${sale.seller}
-Total: R$ ${sale.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-Pagamento: ${sale.payment}
-Data: ${sale.date}
-Itens: ${sale.items} produtos
-Status: ${sale.status}
-    `;
-    
-    alert(saleDetails);
+    setSelectedSale(sale);
+    setShowSaleDialog(true);
   };
 
   const filteredSales = sales.filter(sale => {
@@ -165,6 +158,55 @@ Status: ${sale.status}
           </Card>
         ))}
       </div>
+
+      {selectedSale && (
+        <Dialog open={showSaleDialog} onOpenChange={setShowSaleDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Detalhes da Venda {selectedSale.id}</DialogTitle>
+              <DialogDescription>Informações completas da venda</DialogDescription>
+            </DialogHeader>
+            <div className="space-y-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <div>
+                  <span className="text-sm text-muted-foreground">Cliente</span>
+                  <p className="font-medium">{selectedSale.customer}</p>
+                </div>
+                <div>
+                  <span className="text-sm text-muted-foreground">Vendedor</span>
+                  <p className="font-medium">{selectedSale.seller}</p>
+                </div>
+                <div>
+                  <span className="text-sm text-muted-foreground">Pagamento</span>
+                  <p className="font-medium">{selectedSale.payment}</p>
+                </div>
+                <div>
+                  <span className="text-sm text-muted-foreground">Data/Hora</span>
+                  <p className="font-medium">{selectedSale.date}</p>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <span className="text-sm text-muted-foreground">Total</span>
+                  <p className="text-lg font-bold text-green-600">
+                    R$ {selectedSale.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                  </p>
+                </div>
+                <div className="text-right">
+                  <span className="text-sm text-muted-foreground">Status</span>
+                  <p className="font-medium">{selectedSale.status}</p>
+                </div>
+              </div>
+              <div className="text-sm text-muted-foreground">
+                Itens: {selectedSale.items} produtos
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowSaleDialog(false)}>Fechar</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 };
